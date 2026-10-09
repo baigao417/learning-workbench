@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>一体化学习工作台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <button id="catalog-toggle" class="icon-button" type="button" title="收起课程目录 (Alt+C)" aria-label="收起课程目录" aria-keyshortcuts="Alt+C">◀</button>
+      <div class="brand-block">
+        <span class="eyebrow">Learning Workbench</span>
+        <strong id="course-title">学习台</strong>
+      </div>
+      <div class="topbar-lesson">
+        <span id="lesson-title">选择一节课开始</span>
+        <small id="lesson-meta">本地课程工作区</small>
+      </div>
+      <div id="status" class="status" role="status">加载中…</div>
+    </header>
+
+    <main class="shell">
+      <div id="mobile-backdrop" class="mobile-backdrop" hidden></div>
+      <aside id="course-sidebar" class="course-sidebar" aria-label="课程目录">
+        <div class="sidebar-header">
+          <div>
+            <span class="eyebrow">课程目录</span>
+            <h1>全部课次</h1>
+          </div>
+          <span id="lesson-count" class="count-badge"></span>
+        </div>
+        <div class="sidebar-content">
+          <div class="search-box">
+            <input id="search-input" type="search" placeholder="搜索课程、逐字稿或笔记" />
+            <button id="search-button" type="button">搜索</button>
+          </div>
+          <nav id="lesson-list" class="lesson-list" aria-label="课次列表"></nav>
+
+          <details class="utility-section">
+            <summary>搜索结果 <span id="search-count"></span></summary>
+            <div id="search-results" class="search-results empty">输入关键词开始搜索</div>
+          </details>
+
+          <details class="utility-section">
+            <summary>给工作台提意见 <span class="muted">本机</span></summary>
+            <select id="feedback-kind" aria-label="意见类型">
+              <option value="friction">使用摩擦</option>
+              <option value="idea">优化想法</option>
+              <option value="bug">问题反馈</option>
+            </select>
+            <textarea id="feedback-input" class="feedback-input" placeholder="哪里不顺手，下一步最想优化什么？"></textarea>
+            <button id="save-feedback" class="primary feedback-button" type="button">保存意见</button>
+            <div class="feedback-tabs" role="tablist" aria-label="意见状态">
+              <button id="feedback-open-tab" class="feedback-tab active" type="button" role="tab" aria-selected="true">待处理 <span id="feedback-open-count">0</span></button>
+              <button id="feedback-resolved-tab" class="feedback-tab" type="button" role="tab" aria-selected="false">已完成 <span id="feedback-resolved-count">0</span></button>
+            </div>
+            <div id="feedback-list" class="feedback-list empty">还没有意见记录</div>
+          </details>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <header class="workspace-toolbar">
+          <div class="session-summary">
+            <span id="session-progress">选择课程后显示本节闭环进度</span>
+          </div>
+          <div class="view-switch" role="tablist" aria-label="工作区视图">
+            <button id="learn-view-tab" class="view-tab active" type="button" role="tab" aria-selected="true" aria-keyshortcuts="Alt+L">学习现场</button>
+            <button id="map-view-tab" class="view-tab" type="button" role="tab" aria-selected="false" aria-keyshortcuts="Alt+M">结构浏览</button>
+          </div>
+          <div class="workspace-actions">
+            <button id="notes-toggle" type="button" aria-keyshortcuts="Alt+N" title="打开或收起学习文档 (Alt+N)">学习文档</button>
+            <button id="training-button" class="primary" type="button" disabled>今日练习</button>
+          </div>
+        </header>
+
+        <div class="workspace-body">
+          <section class="primary-workspace">
+            <section id="learn-view" class="workspace-view" role="tabpanel">
+              <div class="learning-grid">
+                <section class="media-pane" aria-label="课程视频">
+                  <div class="video-shell">
+                    <video id="player" preload="metadata" playsinline></video>
+                    <div id="media-overlay" class="media-overlay">
+                      <strong id="media-overlay-title">选择课程后播放</strong>
+                      <span id="media-overlay-detail">视频只从本机读取，不会上传。</span>
+                      <button id="reload-media" type="button" hidden>重新加载视频</button>
+                    </div>
+                  </div>
+                  <div class="player-controls" aria-label="视频播放控制">
+                    <button id="play-toggle" type="button" disabled>播放</button>
+                    <button id="backward-button" class="icon-button" type="button" title="后退 10 秒" aria-label="后退 10 秒" disabled>−10</button>
+                    <button id="forward-button" class="icon-button" type="button" title="前进 10 秒" aria-label="前进 10 秒" disabled>+10</button>
+                    <input id="seek-bar" type="range" min="0" max="1000" value="0" disabled aria-label="视频进度" />
+                    <span class="time-display"><span id="current-time">00:00</span> / <span id="duration-time">00:00</span></span>
+                    <select id="playback-rate" disabled aria-label="播放速度">
+                      <option value="0.75">0.75×</option>
+                      <option value="1" selected>1×</option>
+                      <option value="1.25">1.25×</option>
+                      <option value="1.5">1.5×</option>
+                      <option value="2">2×</option>
+                    </select>
+                    <button id="mute-toggle" type="button" disabled>静音</button>
+                    <button id="fullscreen-button" class="icon-button" type="button" title="视频全屏" aria-label="视频全屏" disabled>⛶</button>
+                  </div>
+                  <div class="capture-bar">
+                    <span id="media-status" class="muted">等待选择本地视频</span>
+                    <div class="capture-actions">
+                      <button id="focus-note-button" type="button" disabled title="继续编辑本课学习文档 (Alt+N)">写笔记 <kbd>Alt N</kbd></button>
+                      <button id="anchor-button" type="button" disabled title="把当前视频时间插入学习文档 (Alt+A)" aria-keyshortcuts="Alt+A">插入时间 <kbd>Alt A</kbd></button>
+                      <button id="screenshot-button" type="button" disabled title="截取当前视频画面 (Alt+S)" aria-keyshortcuts="Alt+S">截图 <kbd>Alt S</kbd></button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="transcript-pane" aria-label="同步逐字稿">
+                  <div class="pane-heading">
+                    <div>
+                      <span class="eyebrow">课程材料</span>
+                      <h2>同步逐字稿</h2>
+                    </div>
+                    <label class="follow-switch"><input id="transcript-follow" type="checkbox" checked /> 自动跟随</label>
+                  </div>
+                  <p id="active-transcript-hint" class="muted">播放后，当前说到的内容会自动高亮。</p>
+                  <div id="transcript-body" class="transcript-body empty">还没有逐字稿分段</div>
+                  <details class="lesson-intro">
+                    <summary>本节内容简介 <span id="transcript-status" class="badge">未选择</span></summary>
+                    <p id="transcript-preview" class="muted">完成本地转录后，这里会显示带时间锚点的课程文本。</p>
+                    <p id="lesson-preview" class="lesson-preview muted">选择课程后，这里会显示这节视频主要讲了什么。</p>
+                    <p id="lesson-intro-source" class="intro-source muted"></p>
+                  </details>
+                </section>
+              </div>
+            </section>
+
+            <section id="map-view" class="workspace-view map-workspace" role="tabpanel" hidden>
+              <div class="map-toolbar">
+                <div>
+                  <span class="eyebrow">结构浏览</span>
+                  <h2 id="mind-map-status">选择课程后读取结构视图</h2>
+                </div>
+                <div class="map-actions">
+                  <button id="mind-map-zoom-out" class="icon-button" type="button" title="缩小导图" aria-label="缩小导图">−</button>
+                  <button id="mind-map-reset" type="button" title="恢复整体并适应窗口">适应窗口</button>
+                  <button id="mind-map-zoom-in" class="icon-button" type="button" title="放大导图" aria-label="放大导图">＋</button>
+                  <button id="mind-map-center" type="button" title="定位中心主题">定位中心</button>
+                  <button id="mind-map-fullscreen" class="icon-button" type="button" title="全屏浏览导图" aria-label="全屏浏览导图">⛶</button>
+                </div>
+              </div>
+              <div id="mind-map-viewport" class="mind-map-viewport" tabindex="0" aria-label="可缩放和平移的结构化思维导图">
+                <div id="mind-map-canvas" class="mind-map-canvas">
+                  <svg id="mind-map-lines" class="mind-map-lines" aria-hidden="true"></svg>
+                  <div id="mind-map-nodes" class="mind-map-nodes empty">暂无结构化思维导图</div>
+                </div>
+              </div>
+              <p class="map-hint">拖动空白处平移，滚轮浏览；点击节点聚焦并定位到对应视频时间。</p>
+            </section>
+          </section>
+
+          <aside id="notes-panel" class="notes-panel" aria-label="课次学习文档">
+            <div class="notes-heading">
+              <div>
+                <span class="eyebrow">当前课次</span>
+                <h2>学习文档</h2>
+              </div>
+              <button id="notes-close" class="icon-button" type="button" title="收起学习文档 (Alt+N)" aria-label="收起学习文档">×</button>
+            </div>
+            <div class="note-time-row">
+              <span>视频 <strong id="note-time">00:00</strong></span>
+              <span id="note-save-status" class="note-save-status">选择课次后开始记录</span>
+            </div>
+            <div class="note-document-toolbar">
+              <div class="note-source-switch" role="group" aria-label="笔记来源筛选">
+                <button id="notes-all" type="button" aria-pressed="true">全部</button>
+                <button id="notes-mine" type="button" aria-pressed="false">只看我写的</button>
+              </div>
+              <div class="note-document-actions">
+                <button id="document-time-button" type="button" disabled title="插入当前视频时间 (Alt+A 或 Ctrl+Enter)">插入时间</button>
+                <button id="document-screenshot-button" type="button" disabled title="截图并插入当前文档 (Alt+S 或 Ctrl+Shift+Enter)">截图</button>
+              </div>
+            </div>
+            <div id="note-format-toolbar" class="note-format-toolbar" role="toolbar" aria-label="笔记格式" hidden>
+              <select id="note-block-type" aria-label="段落格式"><option value="p">正文</option><option value="h1">大标题</option><option value="h2">小标题</option><option value="blockquote">引用</option></select>
+              <button type="button" data-format="bold" aria-label="加粗" title="加粗 (Ctrl+B)"><b>B</b></button>
+              <button type="button" data-format="italic" aria-label="斜体" title="斜体 (Ctrl+I)"><i>I</i></button>
+              <button type="button" data-format="insertUnorderedList" aria-label="项目列表">≡</button>
+              <button type="button" data-format="undo" aria-label="撤销">↶</button>
+              <button type="button" data-format="redo" aria-label="重做">↷</button>
+            </div>
+            <div id="note-input" class="note-document-preview unified-editor" contenteditable="false" role="textbox" aria-label="学习笔记" aria-multiline="true" data-placeholder="写下你的理解、疑问或灵感…" spellcheck="true"></div>
+            <div id="note-mine-preview" class="note-document-preview" aria-label="我的笔记与感想" hidden></div>
+            <p class="note-document-path">仅保存在本机 · 按课次自动整理</p>
+
+            <details class="training-section">
+              <summary>训练记录</summary>
+              <p id="training-status" role="status" aria-live="polite"></p>
+              <div id="training-list" class="training-list empty">还没有训练记录</div>
+            </details>
+          </aside>
+
+          <button id="notes-rail" class="notes-rail" type="button" title="打开学习文档 (Alt+N)" aria-label="打开学习文档">文档</button>
+        </div>
+      </section>
+    </main>
+    <script src="/transcript-sync.js"></script>
+    <script src="/mind-map-layout.js"></script>
+    <script src="/note-document.js"></script>
+    <script src="/block-editor.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>

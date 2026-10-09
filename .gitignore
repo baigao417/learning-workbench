@@ -1,0 +1,50 @@
+# Python / Node / editor residue
+__pycache__/
+.pytest_cache/
+.venv/
+node_modules/
+dist/
+build/
+.idea/
+.vscode/
+
+# Local runtime and generated learning artifacts
+.runtime/
+.local/
+data/local/
+data/cache/
+outputs/generated/
+*.db
+*.sqlite
+*.sqlite3
+
+# Local media and uploads: source videos stay outside this repository
+*.mp4
+*.mov
+*.m4v
+*.wav
+*.mp3
+uploads/
+media/
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.*
+.ace-tool/
+
+# Machine-local shortcuts and handoff bundles
+*.lnk
+*.zip
+docs/frontend-handoff-*/
+
+# Agent run residue: raw logs can echo private assistant memory; screenshots may show course content
+docs/agent-runs/**/*.log
+docs/agent-runs/**/*.png
+
+# Internal development records stay local; public releases exclude their history.
+docs/agent-runs/

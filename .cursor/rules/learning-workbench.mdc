@@ -1,0 +1,8 @@
+---
+description: Learning Workbench project boundaries and mission-first workflow
+alwaysApply: true
+---
+
+Read `AGENTS.md`, `README.md`, and `docs/01-product-direction.md` before changing this project.
+
+This is an auxiliary learning tool. Preserve source provenance, keep the first release scoped to one real course, and do not let tool work replace the real learning task. Use the workstation closed-loop product principle and time-box improvements by the mission-first protocol.
