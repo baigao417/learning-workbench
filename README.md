@@ -4,7 +4,9 @@
 
 ## 演示视频
 
-[观看或下载 42 秒产品演示](https://github.com/baigao417/learning-workbench/releases/download/demo-v5/learning-workbench-v5.mp4)
+https://github.com/user-attachments/assets/304a9605-798c-42ce-8d7d-aa1232f99abf
+
+[下载 42 秒产品演示](https://github.com/baigao417/learning-workbench/releases/download/demo-v5/learning-workbench-demo-v5.mp4)
 
 竖屏双语演示：课前简介与思维导图、同步逐字稿、截图与时间锚点、课后复习、AI 今日作业。使用公有领域教学片与演示数据，不包含个人课程或笔记。
 
